@@ -32,16 +32,6 @@ const comparePass = async (req, res, next) => {
     res.status(501).json({ errormessage: error.message, error });
   }
 };
-// async function checkUser(username, password) {
-//     //... fetch user from a db etc.
-
-//     const match = await bcrypt.compare(password, user.passwordHash);
-
-//     if(match) {
-//         //login
-//     }
-
-//     //...
 
 module.exports = {
   hashPass,
