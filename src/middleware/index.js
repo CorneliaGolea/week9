@@ -6,6 +6,7 @@ const saltRounds = parseInt(process.env.SALT_ROUNDS);
 
 const hashPass = async (req, res, next) => {
   try {
+    console.log("hashPass");
     req.body.password = await bcrypt.hash(req.body.password, saltRounds);
 
     next();
@@ -17,7 +18,6 @@ const hashPass = async (req, res, next) => {
 const comparePass = async (req, res, next) => {
   try {
     req.user = await User.findOne({ where: { username: req.body.username } });
-    console.log(req.user);
 
     req.match = await bcrypt.compare(req.body.password, req.user.password);
 
@@ -32,6 +32,20 @@ const comparePass = async (req, res, next) => {
     res.status(501).json({ errormessage: error.message, error });
   }
 };
+
+// const tokenCheck = async (req, res, next) => {
+//   try {
+
+//     const realDecoded = await jwt.verify(realToken, process.env.SECRET_KEY);
+
+//     console.log("realDecoded:", realDecoded);
+//   } catch (error) {
+//     console.log("invalid token", error);
+//   }
+// };
+
+// const tokenCheck = req.header("Authorisation");
+// console.log(token);
 
 module.exports = {
   hashPass,
