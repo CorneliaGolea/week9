@@ -1,3 +1,4 @@
+const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
 const User = require("../user/model");
@@ -33,21 +34,27 @@ const comparePass = async (req, res, next) => {
   }
 };
 
-// const tokenCheck = async (req, res, next) => {
-//   try {
+const tokenCheck = async (req, res, next) => {
+  console.log("hello token check", req.header("Authorization"));
+  try {
+    const token = req.header("Authorization").replace("Bearer ", "");
+    console.log("token", token);
+    console.log(process.env.SECRET_KEY);
 
-//     const realDecoded = await jwt.verify(realToken, process.env.SECRET_KEY);
+    const decodedToken = await jwt.verify(token, process.env.SECRET_KEY);
+    console.log("decodedToken", decodedToken);
+    req.user = await User.findOne({ where: { id: decodedToken.id } });
+    console.log("req.user");
+    next();
 
-//     console.log("realDecoded:", realDecoded);
-//   } catch (error) {
-//     console.log("invalid token", error);
-//   }
-// };
-
-// const tokenCheck = req.header("Authorisation");
-// console.log(token);
+    // console.log("realDecoded:", realDecoded);
+  } catch (error) {
+    res.status(501).json({ errormessage: error.message, error });
+  }
+};
 
 module.exports = {
   hashPass,
   comparePass,
+  tokenCheck,
 };

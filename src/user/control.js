@@ -34,7 +34,11 @@ const login = async (req, res) => {
 
 const getAllUsers = async (req, res) => {
   try {
+    if (!req.user) {
+      res.status(501).json({ message: "unauthorized" });
+    }
     const users = await User.findAll();
+    // console.log("getallusers")
 
     res.status(200).json({ message: "success", users });
   } catch (error) {
